@@ -32,3 +32,8 @@ html {
 	font-family: monospace;
 	cursor: pointer;
 }
+
+body{
+    background: url('assets/fondo.gif') no-repeat center center fixed;
+    background-size: cover;  /* Ajusta el tamaño del fondo al tamaño del contenedor */        /* Asegura que ocupe el 100% de la altura de la ventana */
+}
