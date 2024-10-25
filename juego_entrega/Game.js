@@ -20,30 +20,30 @@ class Game {
         this.score = 0; // Puntuación inicial
     }
 
- /**
+    /**
      * Da comienzo a la partida
      */
- start () {
-    if (!this.started) {
-        // RequestAnimationFrame(this.update());
-        window.addEventListener("keydown", (e) => this.checkKey(e, true));
-        window.addEventListener("keyup", (e) => this.checkKey(e, false));
-        window.addEventListener("touchstart", (e) => this.handleTouchStart(e, true));
-        window.addEventListener("touchmove", (e) => this.handleTouchMove(e, false));
-        document.getElementById("pause").addEventListener("click", () => {
-            this.pauseOrResume();
-        });
-        document.getElementById("reset").addEventListener("click", () => {
-            this.resetGame();
-        });
-        this.started = true;
-        this.width = window.innerWidth;
-        this.height = window.innerHeight;
+    start () {
+        if (!this.started) {
+            // RequestAnimationFrame(this.update());
+            window.addEventListener("keydown", (e) => this.checkKey(e, true));
+            window.addEventListener("keyup", (e) => this.checkKey(e, false));
+            window.addEventListener("touchstart", (e) => this.handleTouchStart(e, true));
+            window.addEventListener("touchmove", (e) => this.handleTouchMove(e, false));
+            document.getElementById("pause").addEventListener("click", () => {
+                this.pauseOrResume();
+            });
+            document.getElementById("reset").addEventListener("click", () => {
+                this.resetGame();
+            });
+            this.started = true;
+            this.width = window.innerWidth;
+            this.height = window.innerHeight;
 
-        this.player = new Player(this);
-        this.timer = setInterval(() => this.update(), 50);
+            this.player = new Player(this);
+            this.timer = setInterval(() => this.update(), 50);
+        }
     }
-}
 
     /**
      * Pausa o continúa el juego
@@ -96,24 +96,26 @@ class Game {
             }
         }
     }
-    
+
     /**
      * Actualiza la visualización de la puntuación
      */
     updateScoreDisplay() {
         document.getElementById("scoreli").innerHTML = `Score: ${this.score}`;
     }
+
     /**
-     * Actualiza la visualización de la puntuación
+     * Actualiza la visualización de las vidas
      */
     updateLivesDisplay() {
         document.getElementById("livesli").innerHTML = `Lives: ${this.player.lives}`;
     }
+
     /**
-         * Comprueba la tecla que está pulsando el usuario
-         * @param event {Event} Evento de tecla levantada/pulsada
-         * @param isKeyDown {Boolean} Indica si la tecla está pulsada (true) o no (false)
-         */
+     * Comprueba la tecla que está pulsando el usuario
+     * @param event {Event} Evento de tecla levantada/pulsada
+     * @param isKeyDown {Boolean} Indica si la tecla está pulsada (true) o no (false)
+     */
     checkKey (event, isKeyDown) {
         if (!isKeyDown) {
             this.keyPressed = undefined;
@@ -224,17 +226,16 @@ class Game {
      */
     endGame () {
         this.ended = true;
-        let gameOverImage = this.player.lives > 0 ? "assets/you_win.png" : GAME_OVER_PICTURE;
-        let gameOver = new Entity(this, this.width / 2, "auto", this.width / 4, this.height / 4, 0, gameOverImage);
+        let gameOver = new Entity(this, this.width / 2, "auto", this.width / 4, this.height / 4, 0, GAME_OVER_PICTURE)
         gameOver.render();
     }
 
     /**
      * resetea el juego
      */
-    resetGame () {
-    document.location.reload();
-    }
+     resetGame () {
+       document.location.reload();
+     }
 
     /**
      * Actualiza los elementos del juego
@@ -271,5 +272,15 @@ class Game {
         this.opponentShots.forEach((shot) => {
             shot.render();
         });
+    }
+
+    /**
+    * Termina el juego
+    */
+    endGame() {
+        this.ended = true;
+        let gameOverImage = this.player.lives > 0 ? "assets/you_win.png" : GAME_OVER_PICTURE;
+        let gameOver = new Entity(this, this.width / 2, "auto", this.width / 4, this.height / 4, 0, gameOverImage);
+        gameOver.render();
     }
 }
