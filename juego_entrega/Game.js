@@ -106,8 +106,8 @@ class Game {
     /**
      * Actualiza la visualización de la puntuación
      */
-    updateScoreDisplay() {
-        document.getElementById("scoreli").innerHTML = `Score: ${this.score}`;
+    updateLivesDisplay() {
+        document.getElementById("livesli").innerHTML = `Lives: ${this.player.lives}`;
     }
     /**
          * Comprueba la tecla que está pulsando el usuario
@@ -224,7 +224,8 @@ class Game {
      */
     endGame () {
         this.ended = true;
-        let gameOver = new Entity(this, this.width / 2, "auto", this.width / 4, this.height / 4, 0, GAME_OVER_PICTURE)
+        let gameOverImage = this.player.lives > 0 ? "assets/you_win.png" : GAME_OVER_PICTURE;
+        let gameOver = new Entity(this, this.width / 2, "auto", this.width / 4, this.height / 4, 0, gameOverImage);
         gameOver.render();
     }
 

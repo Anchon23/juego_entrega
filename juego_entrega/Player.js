@@ -49,11 +49,12 @@ class Player extends Character {
     collide() {
         if (!this.dead) {
             this.lives--; // Restar una vida
+            this.game.updateLivesDisplay(); // Actualizar las vidas en la pantalla
             if (this.lives > 0) {
                 this.dead = true; // Marcar como muerto
                 this.image.src = this.myImageDead; // Cambiar imagen a muerto
                 setTimeout(() => {
-                    this.image .src = this.myImage; // Recuperar imagen original
+                    this.image.src = this.myImage; // Recuperar imagen original
                     this.dead = false; // Revivir
                 }, 2000);
             } else {
