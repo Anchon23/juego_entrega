@@ -14,9 +14,9 @@ class Character extends Entity {
      * @param myImage {String} Ruta de la imagen del personaje
      * @param myImageDead {String} Ruta de la imagen del personaje cuando muere
      */
-    constructor (game, width, height, x, y, speed, myImage, myImageDead) {
+    constructor(game, width, height, x, y, speed, myImage, myImageDead) {
         super(game, width, height, x, y, speed, myImage);
-        this.dead = false; // Indice si el personaje está vivo o muerto
+        this.dead = false; // Indica si el personaje está vivo o muerto
         this.myImageDead = myImageDead;
     }
 

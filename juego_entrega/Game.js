@@ -17,32 +17,33 @@ class Game {
         this.opponentShots = []; // Disparos del oponente
         this.xDown = null; //  Posición en la que el usuario ha tocado la pantalla
         this.paused = false; // Indica si el juego está pausado
+        this.score = 0; // Puntuación inicial
     }
 
-    /**
+ /**
      * Da comienzo a la partida
      */
-    start () {
-        if (!this.started) {
-            // RequestAnimationFrame(this.update());
-            window.addEventListener("keydown", (e) => this.checkKey(e, true));
-            window.addEventListener("keyup", (e) => this.checkKey(e, false));
-            window.addEventListener("touchstart", (e) => this.handleTouchStart(e, true));
-            window.addEventListener("touchmove", (e) => this.handleTouchMove(e, false));
-            document.getElementById("pause").addEventListener("click", () => {
-                this.pauseOrResume();
-            });
-            document.getElementById("reset").addEventListener("click", () => {
-                this.resetGame();
-            });
-            this.started = true;
-            this.width = window.innerWidth;
-            this.height = window.innerHeight;
+ start () {
+    if (!this.started) {
+        // RequestAnimationFrame(this.update());
+        window.addEventListener("keydown", (e) => this.checkKey(e, true));
+        window.addEventListener("keyup", (e) => this.checkKey(e, false));
+        window.addEventListener("touchstart", (e) => this.handleTouchStart(e, true));
+        window.addEventListener("touchmove", (e) => this.handleTouchMove(e, false));
+        document.getElementById("pause").addEventListener("click", () => {
+            this.pauseOrResume();
+        });
+        document.getElementById("reset").addEventListener("click", () => {
+            this.resetGame();
+        });
+        this.started = true;
+        this.width = window.innerWidth;
+        this.height = window.innerHeight;
 
-            this.player = new Player(this);
-            this.timer = setInterval(() => this.update(), 50);
-        }
+        this.player = new Player(this);
+        this.timer = setInterval(() => this.update(), 50);
     }
+}
 
     /**
      * Pausa o continúa el juego
@@ -85,18 +86,34 @@ class Game {
     /**
      * Elimina al oponente del juego
      */
-    removeOpponent () {
+    removeOpponent() {
         if (this.opponent) {
             document.body.removeChild(this.opponent.image);
+            this.score++; // Incrementar la puntuación al eliminar un oponente
+            this.updateScoreDisplay(); // Actualizar la puntuación en la pantalla
+            if (this.score > 0) {
+                this.opponent = new Boss(this); // Cambiar a un jefe final
+            }
         }
-        this.opponent = new Opponent(this);
     }
-
+    
     /**
-     * Comprueba la tecla que está pulsando el usuario
-     * @param event {Event} Evento de tecla levantada/pulsada
-     * @param isKeyDown {Boolean} Indica si la tecla está pulsada (true) o no (false)
+     * Actualiza la visualización de la puntuación
      */
+    updateScoreDisplay() {
+        document.getElementById("scoreli").innerHTML = `Score: ${this.score}`;
+    }
+    /**
+     * Actualiza la visualización de la puntuación
+     */
+    updateScoreDisplay() {
+        document.getElementById("scoreli").innerHTML = `Score: ${this.score}`;
+    }
+    /**
+         * Comprueba la tecla que está pulsando el usuario
+         * @param event {Event} Evento de tecla levantada/pulsada
+         * @param isKeyDown {Boolean} Indica si la tecla está pulsada (true) o no (false)
+         */
     checkKey (event, isKeyDown) {
         if (!isKeyDown) {
             this.keyPressed = undefined;
@@ -214,9 +231,9 @@ class Game {
     /**
      * resetea el juego
      */
-     resetGame () {
-       document.location.reload();
-     }
+    resetGame () {
+    document.location.reload();
+    }
 
     /**
      * Actualiza los elementos del juego

@@ -7,7 +7,7 @@ class Player extends Character {
      * Inicializa un jugador
      * @param game {Game} La instancia del juego al que pertenece el jugador
      */
-    constructor (game) {
+    constructor(game) {
         const height = PLAYER_HEIGHT * game.width / 100,
             width = PLAYER_WIDTH * game.width / 100,
             x = game.width / 2 - width / 2,
@@ -17,6 +17,7 @@ class Player extends Character {
             myImageDead = PLAYER_PICTURE_DEAD;
 
         super(game, width, height, x, y, speed, myImage, myImageDead);
+        this.lives = INITIAL_LIVES; // Inicializar vidas
     }
 
     /**
@@ -47,10 +48,17 @@ class Player extends Character {
      */
     collide() {
         if (!this.dead) {
-            setTimeout(() => {
-                this.game.endGame();
-            }, 2000);
-            super.collide();
+            this.lives--; // Restar una vida
+            if (this.lives > 0) {
+                this.dead = true; // Marcar como muerto
+                this.image.src = this.myImageDead; // Cambiar imagen a muerto
+                setTimeout(() => {
+                    this.image .src = this.myImage; // Recuperar imagen original
+                    this.dead = false; // Revivir
+                }, 2000);
+            } else {
+                this.game.endGame(); // Terminar el juego si no hay vidas
+            }
         }
     }
 }
