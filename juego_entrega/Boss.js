@@ -8,13 +8,13 @@ class Boss extends Opponent {
      * @param game {Game} La instancia del juego al que pertenece el jefe final
      */
     constructor(game) {
-        const height = OPPONENT_HEIGHT * game.width / 100,
-            width = OPPONENT_WIDTH * game.width / 100,
+        const height = BOSS_HEIGHT * game.width / 100,
+            width = BOSS_WIDTH * game.width / 100,
             x = getRandomNumber(game.width - width / 2),
             y = 0,
-            speed = OPPONENT_SPEED * 2, // Doble velocidad que el triángulo
-            myImage = "assets/jefe.png",
-            myImageDead = "assets/jefe_muerto.png";
+            speed = BOSS_SPEED * 2, // Doble velocidad que el triángulo
+            myImage = BOSS_PICTURE, // Cambiar la imagen del jefe
+            myImageDead = BOSS_PICTURE_DEAD; // Puedes cambiar esto si también deseas modificar la imagen de muerte
 
         super(game, width, height, x, y, speed, myImage, myImageDead);
     }

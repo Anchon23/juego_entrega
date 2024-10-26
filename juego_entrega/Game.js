@@ -2,30 +2,27 @@
  * El propio juego
  */
 class Game {
-    /**
-     * Inicializa un juego
-     */
-    constructor () {
-        this.started = false; // Indica si el juego ha comenzado o no
-        this.ended = false; // Indica si el juego ha terminado o no
-        this.keyPressed = undefined; // Indica la tecla que está pulsando el usuario
-        this.width = 0; // Ancho de la pantalla del juego
-        this.height = 0; // Alto de la pantalla del juego
-        this.player = undefined; // Instancia del personaje principal del juego
-        this.playerShots = []; // Disparos del personaje principal
-        this.opponent = undefined; // Instancia del oponente del juego
-        this.opponentShots = []; // Disparos del oponente
-        this.xDown = null; //  Posición en la que el usuario ha tocado la pantalla
-        this.paused = false; // Indica si el juego está pausado
+    constructor() {
+        this.started = false;
+        this.ended = false;
+        this.keyPressed = undefined;
+        this.width = 0;
+        this.height = 0;
+        this.player = undefined;
+        this.playerShots = [];
+        this.opponent = undefined;
+        this.opponentShots = [];
+        this.xDown = null;
+        this.paused = false;
         this.score = 0; // Puntuación inicial
+        this.bossSpawned = false; // Indica si el jefe ha sido generado
     }
 
     /**
      * Da comienzo a la partida
      */
-    start () {
+    start() {
         if (!this.started) {
-            // RequestAnimationFrame(this.update());
             window.addEventListener("keydown", (e) => this.checkKey(e, true));
             window.addEventListener("keyup", (e) => this.checkKey(e, false));
             window.addEventListener("touchstart", (e) => this.handleTouchStart(e, true));
@@ -59,10 +56,12 @@ class Game {
             this.paused = true;
         }
     }
+
     /**
      * Añade un nuevo disparo al juego, ya sea del oponente o del personaje principal
      * @param character {Character} Personaje que dispara
      */
+
     shoot (character) {
         const arrayShots = character instanceof Player ? this.playerShots : this.opponentShots;
 
@@ -91,9 +90,33 @@ class Game {
             document.body.removeChild(this.opponent.image);
             this.score++; // Incrementar la puntuación al eliminar un oponente
             this.updateScoreDisplay(); // Actualizar la puntuación en la pantalla
-            if (this.score > 0) {
+
+            // Generar un jefe cada 5 puntos
+            if (this.score % 5 === 0) {
+                this.bossSpawned = true; // Indicar que se ha generado un jefe
                 this.opponent = new Boss(this); // Cambiar a un jefe final
+                this.opponent = this.boss; // Asignar el jefe como el oponente actual
+            } else {
+                this.opponent = new Opponent(this); // Generar un nuevo oponente
             }
+        }
+    }
+
+    update() {
+        if (!this.ended) {
+            this.player.update();
+            if (this.opponent === undefined) {
+                this.opponent = new Opponent(this); // Generar un oponente si no existe
+            }
+            this.opponent.update();
+            this.playerShots.forEach((shot) => {
+                shot.update();
+            });
+            this.opponentShots.forEach((shot) => {
+                shot.update();
+            });
+            this.checkCollisions();
+            this.render();
         }
     }
 
@@ -222,15 +245,6 @@ class Game {
     }
 
     /**
-     * Termina el juego
-     */
-    endGame () {
-        this.ended = true;
-        let gameOver = new Entity(this, this.width / 2, "auto", this.width / 4, this.height / 4, 0, GAME_OVER_PICTURE)
-        gameOver.render();
-    }
-
-    /**
      * resetea el juego
      */
      resetGame () {
@@ -279,7 +293,12 @@ class Game {
     */
     endGame() {
         this.ended = true;
-        let gameOverImage = this.player.lives > 0 ? "assets/you_win.png" : GAME_OVER_PICTURE;
+    
+        // Verificar si el jefe ha sido derrotado y el jugador tiene vidas
+        let gameOverImage = (this.player.lives > 0 && this.boss && this.boss.isDefeated) 
+                            ? YOU_WIN_PICTURE 
+                            : GAME_OVER_PICTURE;
+    
         let gameOver = new Entity(this, this.width / 2, "auto", this.width / 4, this.height / 4, 0, gameOverImage);
         gameOver.render();
     }

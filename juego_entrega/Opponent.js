@@ -2,13 +2,10 @@
  * Monstruo al que tenemos que destruir
  */
 class Opponent extends Character {
-    /**
-     * @param game {Game} La instancia del juego al que pertenece el oponente
-     */
-    constructor (game) {
+    constructor(game) {
         const height = OPPONENT_HEIGHT * game.width / 100,
             width = OPPONENT_WIDTH * game.width / 100,
-            x = getRandomNumber(game.width - width / 2),
+            x = getRandomNumber(game.width - width),
             y = 0,
             speed = OPPONENT_SPEED,
             myImage = OPPONENT_PICTURE,
@@ -34,27 +31,12 @@ class Opponent extends Character {
     /**
      * Actualiza los atributos de posición del oponente
      */
-    update () {
+    update() {
         if (!this.dead && !this.game.ended) {
             this.y += this.speed;
             if (this.y > this.game.height) {
-                this.y = 0;
-            }
-            if (this.direction === "R") { // Hacia la derecha
-                if (this.x < this.game.width - this.width - this.speed) {
-                    this.x += this.speed;
-                } else {
-                    this.horizontalMov = 0;
-                }
-            } else if (this.x > this.speed) {
-                this.x -= this.speed;
-            } else {
-                this.horizontalMov = 0;
-            }
-            this.horizontalMov -= this.speed;
-            if (this.horizontalMov < this.speed) {
-                this.horizontalMov = getRandomNumber(this.game.width / 2);
-                this.direction = this.direction === "R" ? "L" : "R"; // Cambia de sentido
+                this.y = 0; // Reiniciar la posición vertical
+                this.x = getRandomNumber(this.game.width - this.width); // Cambiar la posición horizontal aleatoriamente
             }
         }
     }
