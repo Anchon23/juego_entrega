@@ -15,8 +15,8 @@ class Boss extends Character {
 
     collide() {
         if (!this.dead) {
-            this.isDefeated = true;
-            super.collide();
+            this.isDefeated = true; // Marcar como derrotado
+            super.collide(); // Llamar al método collide de la clase padre
         }
     }
 

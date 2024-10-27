@@ -91,7 +91,7 @@ class Game {
             document.body.removeChild(this.opponent.image);
             this.score++;
             this.updateScoreDisplay();
-
+    
             // Si el primer oponente es eliminado, genera el jefe
             if (!this.firstOpponentDefeated) {
                 this.firstOpponentDefeated = true; // Marcar el primer oponente como derrotado
@@ -206,9 +206,9 @@ class Game {
     /**
      * Comrpueba si el personaje principal y el oponente se han chocado entre sí o con los disparos haciendo uso del método hasCollision
      */
-    checkCollisions () {
+    checkCollisions() {
         let impact = false;
-
+    
         for (let i = 0; i < this.opponentShots.length; i++) {
             impact = impact || this.hasCollision(this.player, this.opponentShots[i]);
         }
@@ -216,12 +216,16 @@ class Game {
             this.player.collide();
         }
         let killed = false;
-
+    
         for (let i = 0; i < this.playerShots.length; i++) {
             killed = killed || this.hasCollision(this.opponent, this.playerShots[i]);
         }
         if (killed) {
             this.opponent.collide();
+            // Verificar si el oponente es un jefe y ha sido derrotado
+            if (this.opponent instanceof Boss && this.opponent.isDefeated) {
+                this.endGame(); // Termina el juego y muestra la imagen de victoria
+            }
         }
     }
 
@@ -297,12 +301,12 @@ class Game {
     // Game.js
     endGame() {
         this.ended = true;
-
+    
         // Verificar si el jefe ha sido derrotado y el jugador tiene vidas
         let gameOverImage = (this.player.lives > 0 && this.opponent instanceof Boss && this.opponent.isDefeated) 
                             ? YOU_WIN_PICTURE 
                             : GAME_OVER_PICTURE;
-
+    
         let gameOver = new Entity(this, this.width / 2, "auto", this.width / 4, this.height / 4, 0, gameOverImage);
         gameOver.render();
     }
