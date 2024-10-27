@@ -2,10 +2,6 @@ html {
   overflow: hidden;
 }
 
-.Opponent {
-	animation: rotation 3s infinite linear;
-	-webkit-animation: rotation 3s infinite linear;
-}
 
 .paused .Opponent {
 	animation: none;

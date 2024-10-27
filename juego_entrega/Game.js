@@ -15,6 +15,7 @@ class Game {
         this.xDown = null;
         this.paused = false;
         this.score = 0; // Puntuación inicial
+        this.firstOpponentDefeated = false; // Indica si el primer oponente ha sido derrotado
         this.bossSpawned = false; // Indica si el jefe ha sido generado
     }
 
@@ -88,27 +89,29 @@ class Game {
     removeOpponent() {
         if (this.opponent) {
             document.body.removeChild(this.opponent.image);
-            this.score++; // Incrementar la puntuación al eliminar un oponente
-            this.updateScoreDisplay(); // Actualizar la puntuación en la pantalla
+            this.score++;
+            this.updateScoreDisplay();
 
-            // Generar un jefe cada 5 puntos
-            if (this.score % 5 === 0) {
-                this.bossSpawned = true; // Indicar que se ha generado un jefe
-                this.opponent = new Boss(this); // Cambiar a un jefe final
-                this.opponent = this.boss; // Asignar el jefe como el oponente actual
+            // Si el primer oponente es eliminado, genera el jefe
+            if (!this.firstOpponentDefeated) {
+                this.firstOpponentDefeated = true; // Marcar el primer oponente como derrotado
+                this.bossSpawned = true; // Marcar que el jefe fue generado
+                this.opponent = new Boss(this); // Crear el jefe
             } else {
-                this.opponent = new Opponent(this); // Generar un nuevo oponente
+                // Si el jefe ya fue derrotado, se generan oponentes normales
+                this.opponent = new Opponent(this);
             }
         }
     }
-
+    
+    
     update() {
         if (!this.ended) {
             this.player.update();
             if (this.opponent === undefined) {
                 this.opponent = new Opponent(this); // Generar un oponente si no existe
             }
-            this.opponent.update();
+            this.opponent.update(); // Actualizar al jefe (si es el oponente actual)
             this.playerShots.forEach((shot) => {
                 shot.update();
             });
@@ -291,14 +294,15 @@ class Game {
     /**
     * Termina el juego
     */
+    // Game.js
     endGame() {
         this.ended = true;
-    
+
         // Verificar si el jefe ha sido derrotado y el jugador tiene vidas
-        let gameOverImage = (this.player.lives > 0 && this.boss && this.boss.isDefeated) 
+        let gameOverImage = (this.player.lives > 0 && this.opponent instanceof Boss && this.opponent.isDefeated) 
                             ? YOU_WIN_PICTURE 
                             : GAME_OVER_PICTURE;
-    
+
         let gameOver = new Entity(this, this.width / 2, "auto", this.width / 4, this.height / 4, 0, gameOverImage);
         gameOver.render();
     }
